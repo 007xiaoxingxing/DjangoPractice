@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import datetime
 import platform
 import psutil
+import time
 from collections import OrderedDict
 
 from django.shortcuts import render
@@ -23,6 +25,22 @@ class ServerList(generics.ListCreateAPIView):
 class ServerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Server.objects.all()
     serializer_class = ServerSerializer
+
+
+class MemoryInfoDetail(generics.ListCreateAPIView):
+    queryset = MemoryInfo.objects.all()
+    serializer_class = MemoryInfoSerializer
+
+    def list(self, request, *args, **kwargs):
+        now = datetime.datetime.now()
+        if self.kwargs.get('seconds'):
+            seconds = int(self.kwargs.get('seconds'))
+        else:
+            seconds = 5 * 60
+        queryset = MemoryInfo.objects.filter(server=self.kwargs.get('server_id'),
+                                             update_time__gte=now-datetime.timedelta(seconds=seconds))
+        serializer = MemoryInfoSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])

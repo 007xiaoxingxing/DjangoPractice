@@ -32,7 +32,7 @@ class MemoryInfo(models.Model):
     """
     服务器内存状态信息，总内存，使用内存，共享内存，缓冲内存，可用内存和swap大小,获取时间
     """
-    server = models.ForeignKey(Server, on_delete=models.CASCADE, null=True)
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, null=False)
     total = models.BigIntegerField()
     free = models.BigIntegerField()
     cache = models.BigIntegerField()

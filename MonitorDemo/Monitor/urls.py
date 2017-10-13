@@ -13,6 +13,16 @@ urlpatterns = format_suffix_patterns(
         url(r'^servers/(?P<pk>[0-9]+)/$',
             views.ServerDetail.as_view(),
             name='server-detail'),
-        url(r'^meminfo/$', views.server_meminfo)
+        url(r'^memnow/$',
+            views.server_meminfo,
+            ),
+        url(r'^meminfo/$',
+            views.MemoryInfoDetail.as_view(),
+            name='server-meminfo-list'
+            ),
+        url(r'^meminfo/(?P<server_id>[0-9]+)/(?P<seconds>[0-9]+)/$',
+            views.MemoryInfoDetail.as_view(),
+            name='server-meminfo-filter'
+            )
     ]
 )

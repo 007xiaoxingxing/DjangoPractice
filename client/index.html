@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div class="content" style="height: 100px;width: 200px"></div>
+<div class="getinfo" style="width: 100px;height: 20px;background: red">当前信息</div>
+</body>
+<script>
+$(document).ready(function(){
+
+	$(".getinfo").click(function(){
+		$.ajax({
+		url:"http://127.0.0.1:8000/memnow/",
+		type:"GET",
+		headers: {
+        Accept: "application/json; charset=utf-8"
+    	},
+		success:function(data){
+			$(".content").val('123');
+			alert(/a/);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown){
+			alert(XMLHttpRequest.status);
+ alert(XMLHttpRequest.readyState);
+ alert(textStatus);
+		}
+
+	});
+	});
+
+});
+</script>
+</html>

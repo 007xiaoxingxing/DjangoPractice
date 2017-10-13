@@ -30,10 +30,12 @@ class ServerSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
-class MemoryInfoSerializer(serializers.HyperlinkedModelSerializer):
+class MemoryInfoSerializer(serializers.ModelSerializer):
+    server = serializers.PrimaryKeyRelatedField(queryset=Server.objects.all())
+
     class Meta:
         model = MemoryInfo
-        fields = ('id', 'total', 'free', 'cache', 'shared', 'available', 'update_time', 'server_id')
+        fields = ('id', 'total', 'free', 'cache', 'shared', 'available', 'update_time', 'server')
 
     def create(self, validated_data):
         return MemoryInfo.objects.create(**validated_data)
