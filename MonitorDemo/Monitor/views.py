@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import platform
+import psutil
 from collections import OrderedDict
 
 from django.shortcuts import render
@@ -28,24 +29,25 @@ class ServerDetail(generics.RetrieveUpdateDestroyAPIView):
 def server_meminfo(request, format=None):
     server_os = platform.system()
     if server_os == 'Windows':
-        return Response("Windows")
-        pass
-    elif server_os == 'Linux':
-        meminfo = OrderedDict()
-        with open('/proc/meminfo') as f:
-            for line in f:
-                meminfo[line.split(':')[0]] = line.split(':')[1].strip()
-
-        meminfo_model = MemoryInfo()
-        meminfo_model.total = meminfo['MemTotal']
-        meminfo_model.free = meminfo['MemFree']
-        meminfo_model.available = meminfo['MemAvailable']
-        meminfo_model.swap_free = meminfo['SwapFree']
-        meminfo_model.cache = meminfo['Cached']
+        server = Server.objects.get(pk=1)
+        mem = psutil.virtual_memory()
+        meminfo_model = MemoryInfo(total=mem.total, free=mem.free,
+                                   cache=0L, available=mem.available,
+                                   shared=0L)
+        meminfo_model.server = server
+        meminfo_serializer = MemoryInfoSerializer(meminfo_model)
         meminfo_model.save()
-        serializer = MemoryInfoSerializer(meminfo_model)
-        content = JSONRenderer.render(serializer.data)
-        return Response(content)
+        return Response(meminfo_serializer.data)
+    elif server_os == 'Linux':
+        server = Server.objects.get(pk=2)
+        mem = psutil.virtual_memory()
+        meminfo_model = MemoryInfo(total=mem.total, free=mem.free,
+                                   cache=mem.cached, available=mem.available,
+                                   shared=mem.shared)
+        meminfo_model.server = server
+        meminfo_serializer = MemoryInfoSerializer(meminfo_model)
+        meminfo_model.save()
+        return Response(meminfo_serializer.data)
 
 
 

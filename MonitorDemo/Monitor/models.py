@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+import time
 from django.db import models
+
+OS_TYPE = (
+    ('L', 'Linux'),
+    ('W', 'Windows')
+)
+
+SERVER_USE_TYPE = (
+    ('Web', 'Web Server'),
+    ('Dev', 'Dev Server'),
+    ('DB', 'DB Server')
+)
 
 
 class Server(models.Model):
@@ -10,21 +21,24 @@ class Server(models.Model):
     """
     ip = models.CharField(max_length=32)
     server_name = models.CharField(max_length=100)
+    os_type = models.CharField(max_length=20, choices=OS_TYPE, default='L')
     created = models.DateTimeField(auto_now_add=True)
     department = models.CharField(max_length=100)
     status = models.BooleanField(default=True)
-    server_type = models.CharField(max_length=100)
+    server_use_type = models.CharField(max_length=100, choices=SERVER_USE_TYPE, default='Web')
 
 
 class MemoryInfo(models.Model):
     """
-    服务器内存状态信息，总内存，使用内存，共享内存，缓冲内存，可用内存和swap大小
+    服务器内存状态信息，总内存，使用内存，共享内存，缓冲内存，可用内存和swap大小,获取时间
     """
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, null=True)
     total = models.BigIntegerField()
     free = models.BigIntegerField()
     cache = models.BigIntegerField()
     available = models.BigIntegerField()
-    swap_free = models.BigIntegerField()
+    shared = models.BigIntegerField()
+    update_time = models.DateTimeField(auto_now_add=True)
 
 
 class CPUInfo(models.Model):
