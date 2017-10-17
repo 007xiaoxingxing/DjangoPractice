@@ -9,6 +9,3 @@ class CapacityRatio(models.Model):
     stat_time = models.DateTimeField(auto_now=True, null=False)
     customer_buy = models.BigIntegerField()
     system_total = models.BigIntegerField()
-
-    class Meta:
-        fields = ('id', 'stat_time', 'customer_buy', 'system_total')
